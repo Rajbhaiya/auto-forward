@@ -127,8 +127,8 @@ def main():
 
     updater.start_polling()
 
-    schedule.every().minute.at(":00").do(forward_messages, context=updater.bot)
-    schedule.every().minute.at(":30").do(forward_messages, context=updater.bot)
+    schedule.every().minute.at(":00").do(forward_messages)
+    schedule.every().minute.at(":30").do(forward_messages)
 
     while True:
         schedule.run_pending()
