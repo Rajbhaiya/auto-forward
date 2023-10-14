@@ -1,4 +1,6 @@
 import schedule
+import logging
+import asyncio
 import time
 from pyrogram import Client, filters
 from datetime import datetime
@@ -11,14 +13,6 @@ import pytz
 API_ID = 13675555
 API_HASH = "c0da9c346d2c45dbc7ec49a05da9b2b6"
 TOKEN = "6680969743:AAHpx2FWxrJDDBZTasyyUk05h7a0zG6aeMc"
-
-# MongoDB connection
-MONGO_URI = "mongodb+srv://f2l:f2l@cluster0.fjjge1y.mongodb.net/?retryWrites=true&w=majority:27017"  # Update with your MongoDB URI
-DB_NAME = "channel_scheduler"
-
-# Create a MongoDB client
-client = MongoClient(MONGO_URI)
-db = client[DB_NAME]
 
 # Create a collection to store channel information
 channel_collection = db["channels"]
