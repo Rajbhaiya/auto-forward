@@ -109,13 +109,15 @@ def forward_messages():
         schedule_time = channel['schedule_time']
 
         if current_time_str == schedule_time:
-            main_channel = context.bot.get_chat(main_channel_id)
-            destination_channel = context.bot.get_chat(destination_channel_id)
-            last_message = context.bot.get_chat(main_channel_id).get_last_message()
+            bot = Bot(token=TOKEN)  # Create a bot instance directly
+            main_channel = bot.get_chat(main_channel_id)
+            destination_channel = bot.get_chat(destination_channel_id)
+            last_message = bot.get_chat(main_channel_id).get_last_message()
 
             if last_message:
                 message_id = last_message.message_id
-                context.bot.forward_message(destination_channel_id, main_channel_id, message_id)
+
+                bot.forward_message(destination_channel_id, main_channel_id, message_id)
 # Function to start the bot
 def start(update: Update, context: CallbackContext):
     update.message.reply_text("Bot is running. Use /addchannel, /removechannel, or /listchannels to manage channels.")
