@@ -118,7 +118,7 @@ def main():
 
     while True:
         forward_messages()
-        dt.sleep(60)  # Check for scheduled messages every minute
+        time.sleep(60)  # Check for scheduled messages every minute
 
 if __name__ == "__main__":
     main()
