@@ -9,137 +9,134 @@ from pymongo import MongoClient
 from telegram import Bot, Update
 from telegram.ext import Updater, CommandHandler, CallbackContext
 
-# Your Telegram bot token
-TELEGRAM_TOKEN = "6680969743:AAHpx2FWxrJDDBZTasyyUk05h7a0zG6aeMc"
-MONGO_URI = "mongodb+srv://kagut:kagut@cluster0.hol7gj5.mongodb.net/?retryWrites=true&w=majority"
-db = None
-
-# Create a MongoDB client and database
-mongo_client = MongoClient(MONGO_URI, 27017)
-db = mongo_client.get_database("channel_scheduler")
+# Constants
+TELEGRAM_TOKEN = "6680969743:AAHpx2FWxrJDDBZTasyyUk05h7a0zG6aeMc"  # Replace with your bot token
+MONGO_URI = "mongodb+srv://kagut:kagut@cluster0.hol7gj5.mongodb.net/?retryWrites=true&w=majority"   # Replace with your MongoDB connection URI
 
 # Initialize logging
 logging.basicConfig(format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO)
-logger = logging.getLogger(__name__)
+logger = logging.getLogger(__name)
 
-# Initialize the Telegram bot
-bot = Bot(TELEGRAM_TOKEN)
+# Create a MongoDB client and database
+class Database:
+    def __init__(self, uri):
+        self.client = MongoClient(uri)
+        self.db = self.client.get_database("channel_scheduler")
 
-def get_channels(db):
-    channels = db["channels"]
-    return channels.find()
+    def add_channel(self, main_channel, destination_channel, schedule_time):
+        channels = self.db["channels"]
+        channels.insert_one({
+            "main_channel": main_channel,
+            "destination_channel": destination_channel,
+            "schedule_time": schedule_time
+        })
 
+    def list_channels(self):
+        channels = self.db["channels"]
+        return channels.find()
 
-# Function to add a channel to the database
-def add_channel(update: Update, context: CallbackContext):
-    chat_id = update.message.chat_id
-    args = context.args
+    def remove_channel(self, main_channel, destination_channel):
+        result = self.db["channels"].delete_one({
+            "main_channel": main_channel,
+            "destination_channel": destination_channel
+        })
+        return result.deleted_count > 0
 
-    if len(args) != 3:
-        update.message.reply_text("Usage: /addchannel main_channel destination_channel HH:MM")
-        return
+    def get_channels(self):
+        channels = self.db["channels"]
+        return channels.find()
 
-    main_channel = args[0]
-    destination_channel = args[1]
-    schedule_time = args[2]
+# Telegram bot class
+class TelegramBot:
+    def __init__(self, token):
+        self.bot = Bot(token)
+        self.updater = Updater(token, use_context=True)
+        self.dispatcher = self.updater.dispatcher
 
-    # Store channel information in the database
-    channels = db.channels
-    channels.insert_one({
-        "main_channel": main_channel,
-        "destination_channel": destination_channel,
-        "schedule_time": schedule_time
-    })
+    def add_channel(self, update, context):
+        chat_id = update.message.chat_id
+        args = context.args
 
-    update.message.reply_text("Channel added successfully.")
+        if len(args) != 3:
+            update.message.reply_text("Usage: /addchannel main_channel destination_channel HH:MM")
+            return
 
-# Function to list added channels
-def list_channels(update: Update, context: CallbackContext):
-    chat_id = update.message.chat_id
+        main_channel = args[0]
+        destination_channel = args[1]
+        schedule_time = args[2]
 
-    channels = db.channels.find()
-    channel_list = []
+        db.add_channel(main_channel, destination_channel, schedule_time)
+        update.message.reply_text("Channel added successfully.")
 
-    for channel in channels:
-        channel_list.append(
-            f"Main Channel: {channel['main_channel']}, Destination Channel: {channel['destination_channel']}, Schedule Time: {channel['schedule_time']}"
-        )
+    def list_channels(self, update, context):
+        chat_id = update.message.chat_id
 
-    if channel_list:
-        update.message.reply_text("Channels:\n" + "\n".join(channel_list))
-    else:
-        update.message.reply_text("No channels added yet.")
+        channels = db.list_channels()
+        channel_list = []
 
-# Function to remove a channel from the database
-def remove_channel(update: Update, context: CallbackContext):
-    chat_id = update.message.chat_id
-    args = context.args
+        for channel in channels:
+            channel_list.append(
+                f"Main Channel: {channel['main_channel']}, Destination Channel: {channel['destination_channel']}, Schedule Time: {channel['schedule_time']}"
+            )
 
-    if len(args) != 2:
-        update.message.reply_text("Usage: /removechannel main_channel destination_channel")
-        return
+        if channel_list:
+            update.message.reply_text("Channels:\n" + "\n".join(channel_list))
+        else:
+            update.message.reply_text("No channels added yet.")
 
-    main_channel = args[0]
-    destination_channel = args[1]
+    def remove_channel(self, update, context):
+        chat_id = update.message.chat_id
+        args = context.args
 
-    # Remove the specified channel
-    result = db.channels.delete_one({
-        "main_channel": main_channel,
-        "destination_channel": destination_channel
-    })
+        if len(args) != 2:
+            update.message.reply_text("Usage: /removechannel main_channel destination_channel")
+            return
 
-    if result.deleted_count > 0:
-        update.message.reply_text("Channel removed successfully.")
-    else:
-        update.message.reply_text("Channel not found in the database.")
+        main_channel = args[0]
+        destination_channel = args[1]
+
+        if db.remove_channel(main_channel, destination_channel):
+            update.message.reply_text("Channel removed successfully.")
+        else:
+            update.message.reply_text("Channel not found in the database.")
+
+    def start(self, update, context):
+        update.message.reply_text("Bot is running. Use /addchannel, /removechannel, or /listchannels to manage channels.")
+
+    def run(self):
+        self.dispatcher.add_handler(CommandHandler("start", self.start))
+        self.dispatcher.add_handler(CommandHandler("addchannel", self.add_channel, pass_args=True))
+        self.dispatcher.add_handler(CommandHandler("removechannel", self.remove_channel, pass_args=True))
+        self.dispatcher.add_handler(CommandHandler("listchannels", self.list_channels))
+
+        self.updater.start_polling()
+        schedule.every().minute.at(":00").do(forward_messages)
+        schedule.every().minute.at(":30").do(forward_messages)
+
+        while True:
+            schedule.run_pending()
+            time.sleep(1)
 
 # Function to forward messages from main to destination channels
 def forward_messages():
-    global db  # Access the global variable for the database
-    if db is None:
-        db = create_database()
-
-    channels = get_channels(db)
     current_time = dt.now(pytz.timezone("Asia/Kolkata"))
     current_time_str = current_time.strftime("%H:%M")
 
-    for channel in channels:
+    for channel in db.get_channels():
         main_channel_id = channel['main_channel']
         destination_channel_id = channel['destination_channel']
         schedule_time = channel['schedule_time']
 
         if current_time_str == schedule_time:
-            bot = Bot(token=TELEGRAM_TOKEN)  # Create a bot instance directly
-            main_channel = bot.get_chat(main_channel_id)
-            destination_channel = bot.get_chat(destination_channel_id)
-            last_message = bot.get_chat(main_channel_id).get_last_message()
+            main_channel = bot.bot.get_chat(main_channel_id)
+            destination_channel = bot.bot.get_chat(destination_channel_id)
+            last_message = bot.bot.get_chat(main_channel_id).get_last_message()
 
             if last_message:
                 message_id = last_message.message_id
-
-                bot.forward_message(destination_channel_id, main_channel_id, message_id)
-# Function to start the bot
-def start(update: Update, context: CallbackContext):
-    update.message.reply_text("Bot is running. Use /addchannel, /removechannel, or /listchannels to manage channels.")
-
-# Main function to run the bot
-def main():
-    updater = Updater(TELEGRAM_TOKEN, use_context=True)
-    dispatcher = updater.dispatcher
-
-    dispatcher.add_handler(CommandHandler("start", start))
-    dispatcher.add_handler(CommandHandler("addchannel", add_channel, pass_args=True))
-    dispatcher.add_handler(CommandHandler("removechannel", remove_channel, pass_args=True))
-    dispatcher.add_handler(CommandHandler("listchannels", list_channels))
-
-    updater.start_polling()
-
-    schedule.every().minute.at(":00").do(forward_messages)
-    schedule.every().minute.at(":30").do(forward_messages)
-
-    while True:
-        schedule.run_pending()
-        time.sleep(1)
+                bot.bot.forward_message(destination_channel_id, main_channel_id, message_id)
 
 if __name__ == "__main__":
-    main()
+    db = Database(MONGO_URI)
+    bot = TelegramBot(TELEGRAM_TOKEN)
+    bot.run()
