@@ -85,6 +85,7 @@ def list_channels_command(update: Update, context: CallbackContext):
     update.message.reply_text("\n".join(channel_list)
 
 # Command to remove a channel by specifying its main and destination channels
+
 def remove_channel_command(update: Update, context: CallbackContext):
     if len(context.args) != 2:
         update.message.reply_text("Usage: /removechannel main_channel_id destination_channel_id")
