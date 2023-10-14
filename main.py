@@ -25,6 +25,11 @@ logger = logging.getLogger(__name__)
 # Initialize the Telegram bot
 bot = Bot(TELEGRAM_TOKEN)
 
+def get_channels(db):
+    channels = db["channels"]
+    return channels.find()
+
+
 # Function to add a channel to the database
 def add_channel(update: Update, context: CallbackContext):
     chat_id = update.message.chat_id
