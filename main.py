@@ -1,6 +1,6 @@
 import asyncio
 import logging
-from datetime import datetime, time
+from datetime import datetime as dt, time
 import pytz
 from pyrogram import Client, filters
 from pymongo import MongoClient
@@ -117,7 +117,7 @@ def main():
 
     while True:
         forward_messages()
-        time.sleep(60)  # Check for scheduled messages every minute
+        dt.sleep(60)  # Check for scheduled messages every minute
 
 if __name__ == "__main__":
     main()
