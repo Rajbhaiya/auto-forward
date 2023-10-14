@@ -15,7 +15,7 @@ MONGO_URI = "mongodb+srv://kagut:kagut@cluster0.hol7gj5.mongodb.net/?retryWrites
 
 # Initialize logging
 logging.basicConfig(format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO)
-logger = logging.getLogger(__name)
+logger = logging.getLogger(__name__)
 
 # Create a MongoDB client and database
 class Database:
