@@ -1,6 +1,7 @@
 import asyncio
 import logging
-from datetime import datetime as dt, time
+from datetime import datetime as dt
+import time
 import pytz
 from pyrogram import Client, filters
 from pymongo import MongoClient
