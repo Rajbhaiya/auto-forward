@@ -1,10 +1,17 @@
 import time
-from pyrogram import Client, filters
+import logging
+from pyrogram import Client, filters, idle
 from datetime import datetime
 import pymongo
 import pytz
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
+logging.basicConfig(
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    handlers=[logging.StreamHandler()],
+    level=logging.INFO
+)
+logger = logging.getLogger("Auto-Forwarder-Bot")
 scheduler = AsyncIOScheduler()
 # Your Telegram bot token
 API_ID = 13675555  # Replace with your API ID
@@ -32,7 +39,7 @@ def remove_channel(main_channel, destination_channel):
     channels_col.delete_one({"main_channel": main_channel, "destination_channel": destination_channel})
 
 
-@Client.on_message(filters.channel)
+@app.on_message(filters.channel)
 async def forward_messages(client, message):
     if not channels_col.find_one({"main_channel": message.chat.id}):
         return
@@ -44,7 +51,7 @@ async def forward_messages(client, message):
         scheduler.add_job(app.copy_message, "date", run_date=schedule_time, args=(destination_channel_id, message.chat.id, message.id))
 
 
-@Client.on_message(filters.command("addchannel"))
+@app.on_message(filters.command("addchannel"))
 async def add_channel_command(client, message):
     if len(message.command) != 4:
         await message.reply_text("Usage: /addchannel main_channel_id destination_channel_id HH:MM")
@@ -58,7 +65,7 @@ async def add_channel_command(client, message):
     add_channel(main_channel, destination_channel, schedule_time)
     await message.reply_text("Channel added to the database.")
 
-@Client.on_message(filters.command("listchannels"))
+@app.on_message(filters.command("listchannels"))
 async def list_channels_command(client, message):
     channels = channels_col.find()
     channel_list = ["Channels in the database:"]
@@ -66,7 +73,7 @@ async def list_channels_command(client, message):
         channel_list.append(f"Main: {channel['main_channel']}, Destination: {channel['destination_channel']}, Schedule Time: {channel['schedule_time']}")
     await message.reply_text("\n".join(channel_list))
 
-@Client.on_message(filters.command("removechannel"))
+@app.on_message(filters.command("removechannel"))
 async def remove_channel_command(client, message):
     if len(message.command) != 3:
         await message.reply_text("Usage: /removechannel main_channel_id destination_channel_id")
@@ -78,9 +85,13 @@ async def remove_channel_command(client, message):
     remove_channel(main_channel, destination_channel)
     await message.reply_text("Channel removed from the database.")
 
-@Client.on_message(filters.command("start"))
+@app.on_message(filters.command("start"))
 async def start_command(client, message):
     await message.reply_text("Bot is running. Use /addchannel, /removechannel, or /listchannels to manage channels_col.")
 
 if __name__ == "__main__":
-    app.run()
+    app.start()
+    logger.info("Bot started. Idling...")
+    idle()
+    app.stop()
+    logger.info("Bot stopped.")
