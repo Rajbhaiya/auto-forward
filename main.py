@@ -88,7 +88,7 @@ def remove_channel(update: Update, context: CallbackContext):
         update.message.reply_text("Channel not found in the database.")
 
 # Function to forward messages from main to destination channels
-ef forward_messages(context):
+def forward_messages(context):
     db = create_database()
     channels = get_channels(db)
 
