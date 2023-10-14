@@ -89,7 +89,7 @@ def remove_channel(update: Update, context: CallbackContext):
 # Function to forward messages from main to destination channels
 def forward_messages():
     channels = db.channels.find()
-    current_time = datetime.now(pytz.timezone("Asia/Kolkata")).strftime("%H:%M")
+    current_time = dt.now(pytz.timezone("Asia/Kolkata")).strftime("%H:%M")
 
     for channel in channels:
         main_channel = channel["main_channel"]
