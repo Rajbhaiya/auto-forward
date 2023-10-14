@@ -32,7 +32,7 @@ def remove_channel(main_channel, destination_channel):
     channels_col.delete_one({"main_channel": main_channel, "destination_channel": destination_channel})
 
 
-@Client.on_message(filters.channel):
+@Client.on_message(filters.channel)
 async def forward_messages(client, message):
     if not channels_col.find_one({"main_channel": message.chat.id}):
         return
