@@ -100,7 +100,7 @@ def forward_messages():
         db = create_database()
 
     channels = get_channels(db)
-    current_time = datetime.now(pytz.timezone("Asia/Kolkata"))
+    current_time = dt.now(pytz.timezone("Asia/Kolkata"))
     current_time_str = current_time.strftime("%H:%M")
 
     for channel in channels:
