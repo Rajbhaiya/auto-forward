@@ -113,7 +113,6 @@ def forward_messages(context):
 
                 # Forward the last message from the main channel to the destination channel
                 context.bot.forward_message(destination_channel_id, main_channel_id, message_id)
-
 # Function to start the bot
 def start(update: Update, context: CallbackContext):
     update.message.reply_text("Bot is running. Use /addchannel, /removechannel, or /listchannels to manage channels.")
@@ -130,9 +129,12 @@ def main():
 
     updater.start_polling()
 
+    schedule.every().minute.at(":00").do(forward_messages, context=updater.bot)
+    schedule.every().minute.at(":30").do(forward_messages, context=updater.bot)
+
     while True:
-        forward_messages()
-        time.sleep(60)  # Check for scheduled messages every minute
+        schedule.run_pending()
+        time.sleep(1)
 
 if __name__ == "__main__":
     main()
