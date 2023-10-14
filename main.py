@@ -9,7 +9,7 @@ from telegram.ext import Updater, CommandHandler, CallbackContext
 
 # Your Telegram bot token
 TELEGRAM_TOKEN = "6680969743:AAHpx2FWxrJDDBZTasyyUk05h7a0zG6aeMc"
-DB_URI = "mongodb+srv://kagut:kagut@cluster0.hol7gj5.mongodb.net/?retryWrites=true&w=majority"
+MONGO_URI = "mongodb+srv://kagut:kagut@cluster0.hol7gj5.mongodb.net/?retryWrites=true&w=majority"
 
 
 # Create a MongoDB client and database
