@@ -130,11 +130,11 @@ def forward_messages():
         if current_time_str == schedule_time:
             main_channel = bot.bot.get_chat(main_channel_id)
             destination_channel = bot.bot.get_chat(destination_channel_id)
-            last_message = bot.bot.get_chat(main_channel_id).get_last_message()
+            messages = bot.bot.get_chat_history(main_channel_id, limit=1)
 
-            if last_message:
-                message_id = last_message.message_id
-                bot.bot.forward_message(destination_channel_id, main_channel_id, message_id)
+            if messages:
+                message = messages[0]
+                bot.bot.forward_message(destination_channel_id, main_channel_id, message.message_id)
 
 if __name__ == "__main__":
     db = Database(MONGO_URI)
