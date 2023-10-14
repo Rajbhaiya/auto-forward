@@ -15,7 +15,7 @@ MONGO_URI = "mongodb+srv://kagut:kagut@cluster0.hol7gj5.mongodb.net/?retryWrites
 
 
 # Create a MongoDB client and database
-mongo_client = MongoClient(MONGO_URI)
+mongo_client = MongoClient(MONGO_URI, 27017)
 db = mongo_client.get_database("channel_scheduler")
 
 # Initialize logging
@@ -89,10 +89,12 @@ def remove_channel(update: Update, context: CallbackContext):
         update.message.reply_text("Channel not found in the database.")
 
 # Function to forward messages from main to destination channels
-def forward_messages(context):
+def forward_messages(context, db):
+    # Fetch the database at the beginning of the function
     db = create_database()
-    channels = get_channels(db)
 
+    # Rest of the code remains the same
+    channels = get_channels(db)
     current_time = datetime.now(pytz.timezone("Asia/Kolkata"))
     current_time_str = current_time.strftime("%H:%M")
 
@@ -102,17 +104,12 @@ def forward_messages(context):
         schedule_time = channel['schedule_time']
 
         if current_time_str == schedule_time:
-            # Fetch the chat or channel object for the main and destination channels
             main_channel = context.bot.get_chat(main_channel_id)
             destination_channel = context.bot.get_chat(destination_channel_id)
-
-            # Fetch the last message from the main channel
             last_message = context.bot.get_chat(main_channel_id).get_last_message()
 
             if last_message:
                 message_id = last_message.message_id
-
-                # Forward the last message from the main channel to the destination channel
                 context.bot.forward_message(destination_channel_id, main_channel_id, message_id)
 # Function to start the bot
 def start(update: Update, context: CallbackContext):
