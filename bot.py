@@ -90,6 +90,7 @@ async def start_command(client, message):
     await message.reply_text("Bot is running. Use /addchannel, /removechannel, or /listchannels to manage channels_col.")
 
 if __name__ == "__main__":
+    scheduler.start()
     app.start()
     logger.info("Bot started. Idling...")
     idle()
