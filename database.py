@@ -1,24 +1,43 @@
-import asyncio
-import sys
-import logging
-from motor import motor_asyncio
-from pymongo import MongoClient
-from pymongo.errors import ServerSelectionTimeoutError
+import pymongo
 
-MONGO_DB_URI="mongodb+srv://kagut:kagut@cluster0.hol7gj5.mongodb.net/?retryWrites=true&w=majority"
-MONGO_PORT = 27017
-MONGO_DB = "channel_scheduler"
+# Function to initialize a MongoDB connection and create a database
+def create_database():
+    client = pymongo.MongoClient("mongodb+srv://kagut:kagut@cluster0.hol7gj5.mongodb.net/?retryWrites=true&w=majority:27017")  # Replace with your MongoDB URI
+    db = client["channel_scheduler"]
+    return db
 
+# Function to add a channel to the database
+def add_channel(db, main_channel, destination_channel, schedule_time):
+    channels = db["channels"]
+    channel_data = {
+        "main_channel": main_channel,
+        "destination_channel": destination_channel,
+        "schedule_time": schedule_time
+    }
+    channels.insert_one(channel_data)
 
-client = MongoClient()
-client = MongoClient(MONGO_DB_URI, MONGO_PORT)[MONGO_DB]
-motor = motor_asyncio.AsyncIOMotorClient(MONGO_DB_URI, MONGO_PORT)
-db = motor[MONGO_DB]
-db = client["channel_scheduler"]
-try:
-    asyncio.get_event_loop().run_until_complete(motor.server_info())
-except ServerSelectionTimeoutError:
-    sys.exit(logging.critical("Can't connect to mongodb! Exiting..."))
+# Function to retrieve all channel information from the database
+def get_channels(db):
+    channels = db["channels"]
+    return channels.find()
 
-# Create a collection to store channel information
-channel_collection = db["channels"]
+# Function to remove a channel from the database
+def remove_channel(db, channel_id):
+    channels = db["channels"]
+    channels.delete_one({"_id": channel_id})
+
+# Create the database and collections
+db = create_database()
+
+# Example usage
+add_channel(db, "@main_channel1", "@dest_channel1", "12:00")
+add_channel(db, "@main_channel2", "@dest_channel2", "15:30")
+
+channels = get_channels(db)
+for channel in channels:
+    print(f"ID: {channel['_id']}, Main: {channel['main_channel']}, Destination: {channel['destination_channel']}, Schedule Time: {channel['schedule_time']}")
+
+# Remove a channel (for example, remove the first channel)
+for channel in channels:
+    if channel["main_channel"] == "@main_channel1":
+        remove_channel(db, channel["_id"])
