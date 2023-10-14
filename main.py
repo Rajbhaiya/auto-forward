@@ -88,17 +88,31 @@ def remove_channel(update: Update, context: CallbackContext):
         update.message.reply_text("Channel not found in the database.")
 
 # Function to forward messages from main to destination channels
-def forward_messages():
-    channels = db.channels.find()
-    current_time = dt.now(pytz.timezone("Asia/Kolkata")).strftime("%H:%M")
+ef forward_messages(context):
+    db = create_database()
+    channels = get_channels(db)
+
+    current_time = datetime.now(pytz.timezone("Asia/Kolkata"))
+    current_time_str = current_time.strftime("%H:%M")
 
     for channel in channels:
-        main_channel = channel["main_channel"]
-        destination_channel = channel["destination_channel"]
-        schedule_time = channel["schedule_time"]
+        main_channel_id = channel['main_channel']
+        destination_channel_id = channel['destination_channel']
+        schedule_time = channel['schedule_time']
 
-        if current_time == schedule_time:
-            bot.forward_message(destination_channel, main_channel, message_id)
+        if current_time_str == schedule_time:
+            # Fetch the chat or channel object for the main and destination channels
+            main_channel = context.bot.get_chat(main_channel_id)
+            destination_channel = context.bot.get_chat(destination_channel_id)
+
+            # Fetch the last message from the main channel
+            last_message = context.bot.get_chat(main_channel_id).get_last_message()
+
+            if last_message:
+                message_id = last_message.message_id
+
+                # Forward the last message from the main channel to the destination channel
+                context.bot.forward_message(destination_channel_id, main_channel_id, message_id)
 
 # Function to start the bot
 def start(update: Update, context: CallbackContext):
