@@ -10,10 +10,12 @@ from telegram.ext import Updater, CommandHandler, MessageHandler, CallbackContex
 
 # Your Telegram bot token
 TOKEN = "6680969743:AAHpx2FWxrJDDBZTasyyUk05h7a0zG6aeMc"
+DB_URI = "mongodb+srv://kagut:kagut@cluster0.hol7gj5.mongodb.net/?retryWrites=true&w=majority"
+PORT = 27017
 
 # Function to initialize a MongoDB connection and create a database
 def create_database():
-    client = pymongo.MongoClient("mongodb+srv://kagut:kagut@cluster0.hol7gj5.mongodb.net/?retryWrites=true&w=majority:27017")  # Replace with your MongoDB URI
+    client = pymongo.MongoClient(DB_URI, PORT)  # Replace with your MongoDB URI
     db = client["channel_scheduler"]
     return db
 
