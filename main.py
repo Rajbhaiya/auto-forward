@@ -109,7 +109,7 @@ def forward_messages():
         schedule_time = channel['schedule_time']
 
         if current_time_str == schedule_time:
-            bot = Bot(token=TOKEN)  # Create a bot instance directly
+            bot = Bot(token=TELEGRAM_TOKEN)  # Create a bot instance directly
             main_channel = bot.get_chat(main_channel_id)
             destination_channel = bot.get_chat(destination_channel_id)
             last_message = bot.get_chat(main_channel_id).get_last_message()
