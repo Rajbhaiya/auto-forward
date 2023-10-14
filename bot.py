@@ -6,16 +6,13 @@ from pyrogram import Client, filters
 from datetime import datetime
 from telegram import Update
 from telegram.ext import Updater, CommandHandler, MessageHandler, CallbackContext
-from pymongo import MongoClient
 import pytz
+from database import *
 
 # Your Telegram bot token
 API_ID = 13675555
 API_HASH = "c0da9c346d2c45dbc7ec49a05da9b2b6"
 TOKEN = "6680969743:AAHpx2FWxrJDDBZTasyyUk05h7a0zG6aeMc"
-
-# Create a collection to store channel information
-channel_collection = db["channels"]
 
 # Initialize the Telegram bot
 bot = Client("autoforward", api_id=API_ID, api_hash=API_HASH, bot_token=TOKEN)
