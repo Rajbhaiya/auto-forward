@@ -12,7 +12,7 @@ from telegram.ext import Updater, CommandHandler, CallbackContext
 # Your Telegram bot token
 TELEGRAM_TOKEN = "6680969743:AAHpx2FWxrJDDBZTasyyUk05h7a0zG6aeMc"
 MONGO_URI = "mongodb+srv://kagut:kagut@cluster0.hol7gj5.mongodb.net/?retryWrites=true&w=majority"
-
+db = None
 
 # Create a MongoDB client and database
 mongo_client = MongoClient(MONGO_URI, 27017)
@@ -89,11 +89,11 @@ def remove_channel(update: Update, context: CallbackContext):
         update.message.reply_text("Channel not found in the database.")
 
 # Function to forward messages from main to destination channels
-def forward_messages(context, db):
-    # Fetch the database at the beginning of the function
-    db = create_database()
+def forward_messages():
+    global db  # Access the global variable for the database
+    if db is None:
+        db = create_database()
 
-    # Rest of the code remains the same
     channels = get_channels(db)
     current_time = datetime.now(pytz.timezone("Asia/Kolkata"))
     current_time_str = current_time.strftime("%H:%M")
