@@ -36,7 +36,7 @@ def add_channel(main_channel, destination_channel, schedule_time):
 
 
 def remove_channel(main_channel, destination_channel):
-    channels_col.delete_one({"main_channel": main_channel, "destination_channel": destination_channel})
+    channels_col.delete_one({"main_channel": main_channel, "destination_channel": destination_channel, "schedule_time": schedule_time})
 
 
 @app.on_message(filters.channel)
@@ -76,16 +76,15 @@ async def list_channels_command(client, message):
 @app.on_message(filters.command("removechannel"))
 async def remove_channel_command(client, message):
     if len(message.command) != 3:
-        await message.reply_text("Usage: /removechannel main_channel_id destination_channel_id")
+        await message.reply_text("Usage: /removechannel main_channel_id destination_channel_id HH:MM")
         return
 
     main_channel = int(message.command[1])
     destination_channel = int(message.command[2])
+    schedule_time = message.command[3]
 
-    if remove_channel(main_channel, destination_channel):
-        await message.reply_text("Channel removed from the database.")
-    else:
-        await message.reply_text("Channel pair not found in the database.")
+    remove_channel(main_channel, destination_channel, schedule_time)
+    await message.reply_text("Channel removed from the database.")
 
 @app.on_message(filters.command("start"))
 async def start_command(client, message):
