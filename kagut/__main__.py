@@ -131,7 +131,7 @@ async def start_command(client, message):
 5. /removedelay: remove delay""")
 
 
-if __name__ == "main":
+if __name__ == "__main__":
     scheduler.start()
     app.start()
     logger.info("Bot started. Idling...")
