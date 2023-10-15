@@ -2,6 +2,7 @@ import asyncio
 import sys
 import logging
 import pymongo
+import motor
 from pymongo.errors import ServerSelectionTimeoutError
 from motor import motor_asyncio
 from dotenv import load_dotenv
