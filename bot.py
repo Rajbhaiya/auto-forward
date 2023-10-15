@@ -26,13 +26,11 @@ db = mongodb_client["channel_scheduler"]
 channels_col = db["channels"]
 
 
-def add_channel(main_channel, destination_channel, schedule_time, post_delay_hours, post_delay_minutes):
+def add_channel(main_channel, destination_channel, schedule_time):
     channel_data = {
         "main_channel": main_channel,
         "destination_channel": destination_channel,
         "schedule_time": schedule_time,
-        "post_delay_hours": post_delay_hours,
-        "post_delay_minutes": post_delay_minutes
     }
     channels_col.insert_one(channel_data)
 
