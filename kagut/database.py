@@ -2,7 +2,6 @@ import asyncio
 import sys
 import logging
 import pymongo
-import motor
 from pymongo.errors import ServerSelectionTimeoutError
 from motor import motor_asyncio
 from dotenv import load_dotenv
@@ -11,7 +10,8 @@ load_dotenv('.env', override=True)
 
 MONGO_URI = "mongodb+srv://kagut:kagut@cluster0.hol7gj5.mongodb.net/?retryWrites=true&w=majority"
 
-mongodb_client = pymongo.MongoClient(MONGO_URI, 27017) 
+mongodb_client = pymongo.MongoClient(MONGO_URI, 27017)
+motor = motor_asyncio.AsyncIOMotorClient(MONGO_URI, 27017)
 db = mongodb_client["kagut"]
 channels_col = db["post_channels"]
 
