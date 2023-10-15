@@ -4,7 +4,7 @@ from pyrogram import Client, filters, idle
 from datetime import datetime, timedelta
 import pytz
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
-from database import *
+from kagut.database import *
 from dotenv import load_dotenv
 
 load_dotenv('.env', override=True)
