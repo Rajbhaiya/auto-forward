@@ -26,18 +26,19 @@ db = mongodb_client["channel_scheduler"]
 channels_col = db["channels"]
 
 
-def add_channel(main_channel, destination_channel, schedule_time):
+def add_channel(main_channel, destination_channel, schedule_time, post_delay_hours, post_delay_minutes):
     channel_data = {
         "main_channel": main_channel,
         "destination_channel": destination_channel,
-        "schedule_time": schedule_time
+        "schedule_time": schedule_time,
+        "post_delay_hours": post_delay_hours,
+        "post_delay_minutes": post_delay_minutes
     }
     channels_col.insert_one(channel_data)
 
 
 def remove_channel(main_channel, destination_channel, schedule_time):
     channels_col.delete_one({"main_channel": main_channel, "destination_channel": destination_channel, "schedule_time": schedule_time})
-
 
 @app.on_message(filters.channel)
 async def forward_messages(client, message):
