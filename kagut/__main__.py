@@ -7,7 +7,7 @@ from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from kagut.database import *
 from dotenv import load_dotenv
 
-load_dotenv('.env', override=True)
+load_dotenv(".env", override=True)
 
 app = Client("Auto-Forwarder-Bot", api_id=API_ID, api_hash=API_HASH, bot_token=TOKEN)
 
