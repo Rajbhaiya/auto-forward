@@ -70,7 +70,7 @@ async def list_channels_command(client, message):
     channels = channels_col.find()
     channel_list = ["Channels in the database:"]
     for channel in channels:
-        channel_list.append(f"> Main: `{channel['main_channel']}`\n> Destination: `{channel['destination_channel']}`\n>Schedule Time: `{channel['schedule_time']}`")
+        channel_list.append(f"> Main: `{channel['main_channel']}`\n> Destination: `{channel['destination_channel']}`\n> Schedule Time: `{channel['schedule_time']}`")
     await message.reply_text("\n\n".join(channel_list))
 
 @app.on_message(filters.command("removechannel"))
@@ -82,8 +82,10 @@ async def remove_channel_command(client, message):
     main_channel = int(message.command[1])
     destination_channel = int(message.command[2])
 
-    remove_channel(main_channel, destination_channel)
-    await message.reply_text("Channel removed from the database.")
+    if remove_channel(main_channel, destination_channel):
+        await message.reply_text("Channel removed from the database.")
+    else:
+        await message.reply_text("Channel pair not found in the database.")
 
 @app.on_message(filters.command("start"))
 async def start_command(client, message):
