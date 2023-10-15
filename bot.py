@@ -35,7 +35,7 @@ def add_channel(main_channel, destination_channel, schedule_time):
     channels_col.insert_one(channel_data)
 
 
-def remove_channel(main_channel, destination_channel):
+def remove_channel(main_channel, destination_channel, schedule_time):
     channels_col.delete_one({"main_channel": main_channel, "destination_channel": destination_channel, "schedule_time": schedule_time})
 
 
