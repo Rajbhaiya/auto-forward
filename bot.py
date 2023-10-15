@@ -88,9 +88,10 @@ async def remove_channel_command(client, message):
 @app.on_message(filters.command("start"))
 async def start_command(client, message):
     await message.reply_text("""Namaste i'm a auto forward robot. You can schedule your posts through me. Check commands below to know how to set schedule.
-    1. /addchannel : To add channels for autoforward posts with schedule.
-    2. /removechannel : To remove added channel from database. 
-    3 /listchannels :  Check all added channel.""")
+    
+1. /addchannel : To add channels for autoforward posts with schedule.
+2. /removechannel : To remove added channel from database. 
+3 /listchannels :  Check all added channel.""")
 
 if __name__ == "__main__":
     scheduler.start()
