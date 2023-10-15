@@ -4,6 +4,9 @@ import logging
 import pymongo
 from pymongo.errors import ServerSelectionTimeoutError
 from motor import motor_asyncio
+from dotenv import load_dotenv
+
+load_dotenv('.env', override=True)
 
 mongodb_client = pymongo.MongoClient(MONGO_URI, 27017) 
 db = mongodb_client["kagut"]
