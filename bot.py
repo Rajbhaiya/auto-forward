@@ -70,8 +70,8 @@ async def list_channels_command(client, message):
     channels = channels_col.find()
     channel_list = ["Channels in the database:"]
     for channel in channels:
-        channel_list.append(f"Main: {channel['main_channel']}, Destination: {channel['destination_channel']}, Schedule Time: {channel['schedule_time']}")
-    await message.reply_text("\n".join(channel_list))
+        channel_list.append(f"> Main: `{channel['main_channel']}`\n> Destination: `{channel['destination_channel']}`\n>Schedule Time: `{channel['schedule_time']}`")
+    await message.reply_text("\n\n".join(channel_list))
 
 @app.on_message(filters.command("removechannel"))
 async def remove_channel_command(client, message):
