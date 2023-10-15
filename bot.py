@@ -75,7 +75,7 @@ async def list_channels_command(client, message):
 
 @app.on_message(filters.command("removechannel"))
 async def remove_channel_command(client, message):
-    if len(message.command) != 3:
+    if len(message.command) != 4:
         await message.reply_text("Usage: /removechannel main_channel_id destination_channel_id HH:MM")
         return
 
