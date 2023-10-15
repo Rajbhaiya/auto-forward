@@ -48,7 +48,7 @@ async def forward_messages(client, message):
         hour, minute = map(int, channel_data["schedule_time"].split(":"))
         current_time = datetime.now(pytz.timezone("Asia/Kolkata"))
         schedule_time = current_time.replace(hour=hour, minute=minute, second=0, microsecond=0)
-        scheduler.add_job(app.copy_message, "date", run_date=schedule_time, args=(destination_channel_id, message.chat.id, message.id))
+        scheduler.add_job(app.copy_message, "date", run_date=schedule_time, args=(destination_channel_id, message.chat.id, message.id), kwargs={"reply_markup": message.reply_markup})
 
 
 @app.on_message(filters.command("addchannel"))
