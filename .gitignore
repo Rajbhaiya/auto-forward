@@ -1,0 +1,8 @@
+.env
+cache
+bot.session
+bot.session-journal
+
+venv
+.venv
+env.json
