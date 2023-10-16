@@ -39,12 +39,3 @@ def remove_channel_schedule(main_channel, destination_channel,):
             channels_col.update_one(channel_data, {"$set": {"schedule_time": None}})
         else:
             channels_col.delete_one(db_item)
-
-def remove_channel_schedule(main_channel, destination_channel,):
-    channel_data = {"main_channel": main_channel, "destination_channel": destination_channel}
-    db_item = channels_col.find_one(channel_data)
-    if db_item:
-        if db_item.get("delay_time"):
-            channels_col.update_one(channel_data, {"$set": {"delay_time": None}})
-        else:
-            channels_col.delete_one(db_item)
