@@ -8,8 +8,8 @@ from dotenv import load_dotenv
 
 load_dotenv('.env', override=True)
 
-mongodb_client = pymongo.MongoClient(MONGO_URI, 27017)
-motor = motor_asyncio.AsyncIOMotorClient(MONGO_URI, 27017)
+mongodb_client = pymongo.MongoClient(DB_URL, 27017)
+motor = motor_asyncio.AsyncIOMotorClient(DB_URL, 27017)
 db = mongodb_client["kagut"]
 channels_col = db["post_channels"]
 
