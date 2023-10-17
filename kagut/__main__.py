@@ -5,9 +5,10 @@ from datetime import datetime, timedelta
 import pytz
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from kagut.database import remove_channel_schedule, add_channel
-from dotenv import find_dotenv, load_dotenv
-load_dotenv(find_dotenv())
-load_dotenv("config.env", override=True)
+import config.env
+#from dotenv import find_dotenv, load_dotenv
+#load_dotenv(find_dotenv())
+#load_dotenv("config.env", override=True)
 app = Client("Auto-Forwarder-Bot", api_id=API_ID, api_hash=API_HASH, bot_token=TOKEN)
 
 def readable_time(seconds: int) -> str:
