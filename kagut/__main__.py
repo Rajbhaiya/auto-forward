@@ -9,6 +9,15 @@ from config import *
 #from dotenv import find_dotenv, load_dotenv
 #load_dotenv(find_dotenv())
 #load_dotenv("config.env", override=True)
+
+logging.basicConfig(
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    handlers=[logging.StreamHandler()],
+    level=logging.INFO
+)
+logger = logging.getLogger("Auto-Forwarder-Bot")
+scheduler = AsyncIOScheduler()
+
 app = Client("Auto-Forwarder-Bot", api_id=API_ID, api_hash=API_HASH, bot_token=TOKEN)
 
 def readable_time(seconds: int) -> str:
