@@ -4,7 +4,7 @@ import logging
 import pymongo
 from pymongo.errors import ServerSelectionTimeoutError
 from motor import motor_asyncio
-import config.env
+from config import *
 #from dotenv import find_dotenv, load_dotenv
 #load_dotenv(find_dotenv())
 #load_dotenv("config.env", override=True)
