@@ -5,9 +5,8 @@ from datetime import datetime, timedelta
 import pytz
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from kagut.database import remove_channel_schedule, add_channel
-from dotenv import load_dotenv
-
-load_dotenv(".env", override=True)
+from dotenv import find_dotenv, load_dotenv
+load_dotenv(find_dotenv())
 
 app = Client("Auto-Forwarder-Bot", api_id=API_ID, api_hash=API_HASH, bot_token=TOKEN)
 
