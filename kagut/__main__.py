@@ -4,7 +4,7 @@ from pyrogram import Client, filters, idle
 from datetime import datetime, timedelta
 import pytz
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
-from kagut.database import remove_channel_schedule, add_channel
+from kagut.database import remove_channel_schedule, add_channel, channels_col
 from config import *
 #from dotenv import find_dotenv, load_dotenv
 #load_dotenv(find_dotenv())
