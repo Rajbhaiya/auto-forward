@@ -4,9 +4,8 @@ import logging
 import pymongo
 from pymongo.errors import ServerSelectionTimeoutError
 from motor import motor_asyncio
-from dotenv import load_dotenv
-
-load_dotenv('.env', override=True)
+from dotenv import find_dotenv, load_dotenv
+load_dotenv(find_dotenv())
 
 mongodb_client = pymongo.MongoClient(DB_URL, 27017)
 motor = motor_asyncio.AsyncIOMotorClient(DB_URL, 27017)
