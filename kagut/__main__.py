@@ -3,8 +3,7 @@ import logging
 from pyrogram import Client, filters, idle
 from datetime import datetime, timedelta
 import pytz
-import scheduler
-from apscheduler.schedulers.asyncio import AsyncIOScheduler
+from apscheduler.schedulers.asyncio import AsyncIOScheduler as scheduler
 from kagut.database import remove_channel_schedule, add_channel
 from config import *
 #from dotenv import find_dotenv, load_dotenv
