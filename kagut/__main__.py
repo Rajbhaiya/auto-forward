@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 import pytz
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from kagut.database import remove_channel_schedule, add_channel
-import config.env
+from config import *
 #from dotenv import find_dotenv, load_dotenv
 #load_dotenv(find_dotenv())
 #load_dotenv("config.env", override=True)
